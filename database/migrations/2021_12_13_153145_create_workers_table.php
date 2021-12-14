@@ -17,8 +17,8 @@ class CreateWorkersTable extends Migration
             $table->id();
             $table->string('last_name', 100);
             $table->string('first_name', 100);
-            $table->string('worker_number', 100);
-            $table->string('password', 100);
+            $table->string('worker_number', 100)->unique();
+            $table->string('password', 100)->unique();
             $table->timestamps();
         });
     }
