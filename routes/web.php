@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WokerController;
+use App\Http\Controllers\WorkerController;
 
 
 Route::get('/', function () {
@@ -15,4 +15,4 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 
-Route::get('/home', [WokerController::class, 'index']);
+Route::get('/home', [WorkerController::class, 'index']);
