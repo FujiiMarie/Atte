@@ -9,7 +9,7 @@
     body {
       font-size: 16px;
       margin: 5px;
-            min-height: 100vh;
+      min-height: 100vh;
       position: relative;
     }
     a {

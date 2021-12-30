@@ -1,11 +1,15 @@
+@extends('layouts.default')<!-- 疑問：Tailwind CSSしか反映されてない様子。 -->
+
+@section('title', 'Atte')
+
+@include('layouts.header')<!-- 疑問：CSSホーム　日付一覧　ログアウトを表示しないようにしたい。 -->
+
+@section('content')
 <x-guest-layout>
     <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
-
+        <div class="text-2xl font-bold text-center">
+            会員登録
+        </div>
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
@@ -13,47 +17,61 @@
             @csrf
 
             <!-- Name -->
-            <div>
-                <x-label for="name" :value="__('Name')" />
-
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-            </div>
+            <x-input
+                id="name"
+                class="block my-6 w-full placeholder-gray-400"
+                type="text"
+                name="name"
+                :value="old('name')"
+                placeholder="名前"
+                required autofocus
+            />
 
             <!-- Email Address -->
-            <div class="mt-4">
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-            </div>
+            <x-input
+                id="email"
+                class="block my-6 w-full placeholder-gray-400"
+                type="email"
+                name="email"
+                :value="old('email')"
+                placeholder="メールアドレス"
+                required
+            />
 
             <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="new-password" />
-            </div>
+            <x-input
+                id="password"
+                class="block my-6 w-full placeholder-gray-400"
+                type="password"
+                name="password"
+                placeholder="パスワード"
+                required autocomplete="new-password"
+            />
 
             <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
+            <x-input
+                id="password_confirmation"
+                class="block my-6 w-full placeholder-gray-400"
+                type="password"
+                name="password_confirmation"
+                placeholder="確認用パスワード"
+                required
+            />
 
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required />
+            <x-button class="text-base">
+                {{ __('会員登録') }}
+            </x-button>
+
+            <div class="text-center text-sm font-bold mt-6 text-gray-400">
+                アカウントをお持ちの方はこちらから
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ml-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
+            <a class="flex justify-center text-sm font-bold text-blue-700 hover:text-purple-700" href="{{ route('login') }}">
+                {{ __('ログイン') }}
+            </a>
+            
         </form>
     </x-auth-card>
 </x-guest-layout>
+@endsection
+@include('layouts.footer')
