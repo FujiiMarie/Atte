@@ -1,11 +1,5 @@
-@extends('layouts.default')<!-- 疑問：Tailwind CSSしか反映されてない様子。 -->
-
-@section('title', 'Atte')
-
-@include('layouts.header')<!-- 疑問：CSSホーム　日付一覧　ログアウトを表示しないようにしたい。 -->
-
-@section('content')
 <x-guest-layout>
+
     <x-auth-card>
         <div class="text-2xl font-bold text-center">
             会員登録
@@ -72,6 +66,5 @@
             
         </form>
     </x-auth-card>
+    
 </x-guest-layout>
-@endsection
-@include('layouts.footer')

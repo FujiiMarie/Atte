@@ -1,11 +1,5 @@
-@extends('layouts.default')<!-- 疑問：Tailwind CSSしか反映されてない様子。 -->
-
-@section('title', 'Atte')
-
-@include('layouts.header')
-
-@section('content')
 <x-guest-layout>
+
     <x-auth-card>
         <div class="text-2xl font-bold text-center">
             ログイン
@@ -69,6 +63,5 @@
 
         </form>
     </x-auth-card>
+    
 </x-guest-layout>
-@endsection
-@include('layouts.footer')
