@@ -1,49 +1,31 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between h-12">
-            <div class="flex items-center text-4xl font-semibold">
-                <a href="{{ route('dashboard') }}">
-                    Atte
-                </a>
+    
+    <x-slot name="slot">
+        <div class="py-12">
+            <div class="flex justify-center text-xl font-bold pb-12">
+                ここに日付つける
             </div>
-            <div class="space-x-8 ml-10 flex">
-                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    {{ __('ホーム') }}
-                </x-nav-link>
-                <x-nav-link :href="route('attendancedatelist')" :active="request()->routeIs('dashboard')">
-                    {{ __('日付一覧') }}
-                </x-nav-link>
-                <x-nav-link>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <input type="submit" value="ログアウト">
-                    </form>
-                </x-nav-link>
+            <table class="w-11/12 mx-auto">
+                @csrf
+                <tr class="border-t border-gray-400 h-16">
+                    <th>名前</th>
+                    <th>勤務開始</th>
+                    <th>勤務終了</th>
+                    <th>休憩時間</th>
+                    <th>勤務時間</th>
+                </tr>
+                <tr class="border-t border-gray-400 h-16">
+                    <td>名前のデータ</td>
+                    <td>勤務開始のデータ</td>
+                    <td>勤務終了のデータ</td>
+                    <td>休憩時間のデータ</td>
+                    <td>勤務時間のデータ</td>
+                </tr>
+            </table>
+            <div class="flex justify-center text-xl font-bold pt-12">
+                ここにページネーション入れる
             </div>
         </div>
     </x-slot>
 
-    <x-slot name="slot">
-        <table class="w-screen my-5">
-            @csrf
-            <tr>
-                <th>名前</th>
-                <th>勤務開始</th>
-                <th>勤務終了</th>
-                <th>休憩時間</th>
-                <th>勤務時間</th>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </x-slot>
-
-    <x-slot name="footer">
-      <small class="flex justify-center font-bold">Atte, inc.</small>
-    </x-slot>
 </x-app-layout>

@@ -16,28 +16,41 @@
     </head>
 
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            <header class="bg-white">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
+        <!-- Page Heading -->
+        <header class="bg-white mx-auto p-6 flex justify-between">
+            <div class="flex items-center text-4xl font-semibold">
+                <a href="{{ route('dashboard') }}">
+                    Atte
+                </a>
+            </div>
+            <div class="space-x-8 ml-10 flex">
+                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('ホーム') }}
+                </x-nav-link>
+                <x-nav-link :href="route('attendancedatelist')" :active="request()->routeIs('attendancedatelist')">
+                    {{ __('日付一覧') }}
+                </x-nav-link>
+                <x-nav-link>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <input type="submit" value="ログアウト">
+                    </form>
+                </x-nav-link>
+            </div>
+        </header>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+        <!-- Page Content -->
+        <main class="bg-gray-100">
+            {{ $slot }}
+        </main>
 
-            <!-- Page footer -->
-            <footer class="bg-white">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $footer }}
-                </div>
-            </footer>
+        <!-- Page footer -->
+        <footer>
+            <small class="bg-white mx-auto p-3 sm:px-6 lg:px-8 flex justify-center font-bold">
+                Atte, inc.
+            </small>
+        </footer>
 
-        </div>
     </body>
 </html>
