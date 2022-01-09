@@ -14,13 +14,15 @@
                     <th>休憩時間</th>
                     <th>勤務時間</th>
                 </tr>
+                @foreach ($items as $item)
                 <tr class="border-t border-gray-400 h-16">
-                    <td>名前のデータ</td>
+                    <td>{{$item->name}}</td>
                     <td>勤務開始のデータ</td>
                     <td>勤務終了のデータ</td>
                     <td>休憩時間のデータ</td>
                     <td>勤務時間のデータ</td>
                 </tr>
+                @endforeach
             </table>
             <div class="flex justify-center text-xl font-bold pt-12">
                 ここにページネーション入れる

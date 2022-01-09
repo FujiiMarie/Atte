@@ -5,28 +5,22 @@
             {{ Auth::user()->name }}さんお疲れ様です！
         </div>
 
-        <div class="pb-12">
-            <div class="mx-auto">
-                <div class="text-xl font-bold text-center space-y-10">
-                    <div class="flex flex-wrap justify-center space-x-10"> 
-                        <div class="py-20 px-48 bg-white">
-                            勤務開始
-                        </div>
-                        <div class="py-20 px-48 bg-white">
-                            勤務終了
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap justify-center space-x-10"> 
-                        <div class="py-20 px-48 bg-white">
-                            休憩開始
-                        </div>
-                        <div class="py-20 px-48 bg-white">
-                            休憩終了
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <form action="/attendancedatelist" method="POST" class="flex flex-wrap justify-center pb-12 text-center">
+            @csrf
+            <button class="w-2/5 mr-5 py-20 bg-white text-xl font-bold">
+                勤務開始
+            </button>
+            <button class="w-2/5 ml-5 py-20 bg-white text-xl font-bold">
+                勤務終了
+            </button>
+            <button class="w-2/5 mr-5 my-10 py-20 bg-white text-xl font-bold">
+                休憩開始
+            </button>
+            <button class="w-2/5 ml-5 my-10 py-20 bg-white text-xl font-bold">
+                休憩終了
+            </button>
+        </form>     
+        
     </x-slot>
 
 </x-app-layout>
