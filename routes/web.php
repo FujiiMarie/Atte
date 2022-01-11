@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AttendanceDateListController;
+use App\Http\Controllers\AttendanceController;
 
 
 Route::get('/', function () {
@@ -14,6 +14,6 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/attendancedatelist', [AttendanceDateListController::class, 'index'])->name('attendancedatelist');
+Route::get('/attendancedatelist', [AttendanceController::class, 'datelist'])->name('attendancedatelist');
 
-Route::post('/attendancedatelist', [AttendanceDateListController::class, 'create']);
+Route::post('/attendancedatelist', [AttendanceController::class, 'create']);

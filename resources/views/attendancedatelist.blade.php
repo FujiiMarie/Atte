@@ -2,11 +2,12 @@
     
     <x-slot name="slot">
         <div class="py-12">
+            @foreach ($items as $item)
             <div class="flex justify-center text-xl font-bold pb-12">
-                ここに日付つける
+                {{$item->work_day}}
             </div>
+            @endforeach
             <table class="w-11/12 mx-auto">
-                @csrf
                 <tr class="border-t border-gray-400 h-16">
                     <th>名前</th>
                     <th>勤務開始</th>
@@ -16,9 +17,9 @@
                 </tr>
                 @foreach ($items as $item)
                 <tr class="border-t border-gray-400 h-16">
-                    <td>{{$item->name}}</td>
-                    <td>勤務開始のデータ</td>
-                    <td>勤務終了のデータ</td>
+                    <td>{{$item->user_id}}</td>
+                    <td>{{$item->start_time}}</td>
+                    <td>{{$item->end_time}}</td>
                     <td>休憩時間のデータ</td>
                     <td>勤務時間のデータ</td>
                 </tr>
