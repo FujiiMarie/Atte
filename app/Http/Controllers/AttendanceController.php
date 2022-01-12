@@ -19,7 +19,7 @@ class AttendanceController extends Controller
         $today = Carbon::today();
 
         //セッションへ値が存在するか調べる場合hasを利用する　nullでない場合trueになる
-        if ($request->session()->has('今日のデータがあるかどうかのコード')) 
+        if ($request->session()->has('work_day')) 
         {
             if ($request->session()->has('end_time')) 
             {
@@ -27,15 +27,15 @@ class AttendanceController extends Controller
             }
             else
             {
-                //休憩中かどうか？restsテーブルからwhereでデータ取得、break_startをorser byで指定かつ一番初めのデータを持ってくる
+                //休憩中かどうか？restsテーブルからwhereでデータ取得、start_restをorser byで指定かつ一番初めのデータを持ってくる
                 $userId = Rest::where('user_id', $user->id)->first();
                 $today = Carbon::today();
                 
-                if ($request->session()->has('end_rest'))//かつ休憩終了しているコード
+                if ($request->session()->has('end_rest'))//休憩終了している
                 {
                     //表示：勤務終了、休憩開始
                 }
-                elseif ($request->session()->has('end_rest'))//かつ休憩中を示すコード
+                elseif ($request->session()->has('start_rest'))//休憩中
                 {
                     //表示：休憩終了
                 }
