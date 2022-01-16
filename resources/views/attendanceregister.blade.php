@@ -7,7 +7,7 @@
 
         <form action="/attendancedatelist" method="POST" class="flex flex-wrap justify-center pb-12 text-center">
             @csrf
-            <button class="w-2/5 mr-5 py-20 bg-white text-xl font-bold" type="submit">
+            <button class="w-2/5 mr-5 py-20 bg-white text-xl font-bold cursor-not-allowed disabled:opacity-50" disabled type="submit">
                 勤務開始
             </button>
             <button class="w-2/5 ml-5 py-20 bg-white text-xl font-bold" type="submit">
