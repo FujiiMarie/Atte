@@ -30,29 +30,36 @@ class AttendanceController extends Controller
         $user = Auth::user();
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
+        $now = Carbon::now();
         $attendance = Attendance::where('user_id', $user_id)->where('work_day', $today)->first();
+        $end_time = Attendance::where('end_time', $now)->first();
         // $attendanceの中身{id,user_id,work_day,start_time,end_time,create_date,update_date}
 
         //デバッグ
         Log::alert('useridの出力調査', ['Auth_user_id' => $user_id]);
-        Log::alert('useridの出力調査', ['today' => $today]);
-        // Log::alert('useridの出力調査', ['$attendance_user_id' => $attendance->user_id]);
-        // Log::alert('useridの出力調査', ['$attendance_work_day' => $attendance->work_day]);
-        // Log::alert('useridの出力調査', ['$attendance_end_time' => $attendance->end_time]);
+        Log::alert('今日の出力調査', ['today' => $today]);
+        Log::alert('現在時刻の出力調査', ['now' => $now]);
+        Log::alert('attendanceの出力調査', ['attendance' => $attendance]);
+        Log::alert('end_timeの出力調査', ['end_time' => $end_time]);
 
         //①今日出勤しているかどうか？
         if($attendance != null){ //データがある場合:「勤務開始」ボタンが押せない
             return view('attendanceregister', ['btn_start_time' => $btn_start_time]);
 
             //②勤務終了時間が入っているか？
-            if($attendance->end_time != null){//入っている場合：全てのボタンが押せない
+            if($end_time != null){//入っている場合：全てのボタンが押せない
                 return view('attendanceregister', $btn_display);
             }else{//入っていない場合：③休憩中かどうか？
-                $rest = Rest::where('user_id', $user_id)->where('work_day', $today)->first();
-                // start_restをorder byで指定かつ一番初めのデータを持ってくる
+
+                $start_rest = Rest::start_rest();
+                $now_rest = Rest::orderBy('start_rest', 'asc')->first();
+
+                Log::alert('start_restの出力調査', ['start_rest' => $start_rest]);
+                Log::alert('now_restの出力調査', ['now_rest' => $now_rest]);
+
                 if($rest->start_rest != null){//データがある場合：④休憩終了時間があるかどうか？
 
-                    if($rest->end_rest != null){//入っている場合（休憩終了）：「勤務終了」「休憩開始」ボタンが押せる
+                    if($now_rest != null){//入っている場合（休憩終了）：「勤務終了」「休憩開始」ボタンが押せる
                         return view('attendanceregister', ['btn_end_time' => $btn_end_time], ['btn_rest_start' => $btn_rest_start]);//←trueにしたい
                     }else{//入っていない場合（休憩中）：「休憩終了」ボタンが押せる
                         return view('attendanceregister', ['btn_rest_end' => $btn_rest_end]);//←trueにしたい
@@ -69,9 +76,9 @@ class AttendanceController extends Controller
 
     public function start(Request $request){}//勤務開始
 
-    public function reststart(Request $request){}//休憩開始
+    public function startrest(Request $request){}//休憩開始
 
-    public function restend(Request $request){}//休憩終了
+    public function endrest(Request $request){}//休憩終了
 
     public function end(Request $request){}//勤務終了
 

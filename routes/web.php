@@ -14,7 +14,7 @@ Route::get('/attendanceregister', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/attendanceregister', [AttendanceController::class, 'index']);
+Route::get('/attendanceregister', [AttendanceController::class, 'index'])->name('dashboard');;
 
 Route::get('/attendancedatelist', [AttendanceController::class, 'datelist'])->name('attendancedatelist');
 
