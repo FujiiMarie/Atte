@@ -52,24 +52,30 @@ class AttendanceController extends Controller
             }else{//入っていない場合：③休憩中かどうか？
 
                 $start_rest = Rest::start_rest();
-                $now_rest = Rest::orderBy('start_rest', 'asc')->first();
+                $now_rest = Rest::orderBy('start_rest', 'desc')->first();
 
                 Log::alert('start_restの出力調査', ['start_rest' => $start_rest]);
                 Log::alert('now_restの出力調査', ['now_rest' => $now_rest]);
 
-                if($rest->start_rest != null){//データがある場合：④休憩終了時間があるかどうか？
+                if($now_rest != null){//データがある場合：④休憩終了時間があるかどうか？
 
                     if($now_rest != null){//入っている場合（休憩終了）：「勤務終了」「休憩開始」ボタンが押せる
-                        return view('attendanceregister', ['btn_end_time' => $btn_end_time], ['btn_rest_start' => $btn_rest_start]);//←trueにしたい
+                        $btn_end_time = true;
+                        $btn_rest_start = true;
+                        return view('attendanceregister', ['btn_end_time' => $btn_end_time, 'btn_rest_start' => $btn_rest_start]);
                     }else{//入っていない場合（休憩中）：「休憩終了」ボタンが押せる
-                        return view('attendanceregister', ['btn_rest_end' => $btn_rest_end]);//←trueにしたい
+                        $btn_end_rest = true;
+                        return view('attendanceregister', ['btn_rest_end' => $btn_end_rest]);
                     }
                 }else{//データがない場合：（休憩していない）：「勤務終了」「休憩開始」ボタンが押せる
-                    return view('attendanceregister', ['btn_end_time' => $btn_end_time], ['btn_rest_start' => $btn_rest_start]);//←trueにしたい
+                    $btn_end_time = true;
+                    $btn_start_rest = true;
+                    return view('attendanceregister', ['btn_end_time' => $btn_end_time, 'btn_rest_start' => $btn_start_rest]);
                 }            
             }
         }else{//データがない場合:「勤務開始」ボタンが押せる
-            return view('attendanceregister', ['btn_start_time' => $btn_start_time]);//←trueにしたい
+            $btn_start_time = true;
+            return view('attendanceregister', ['btn_start_time' => $btn_start_time]);
         }
     }
 
