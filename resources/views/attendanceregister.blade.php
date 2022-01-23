@@ -5,19 +5,18 @@
             {{ Auth::user()->name }}さんお疲れ様です！
         </div>
 
-        <form action="/attendancedatelist" method="POST" class="flex flex-wrap justify-center pb-12 text-center">
+        <form action="/" method="POST" class="flex flex-wrap justify-center pb-12 text-center">
             @csrf
-            {{ $btn_start_time }}
-            <button class="w-2/5 mr-5 py-20 bg-white text-xl font-bold cursor-not-allowed disabled:opacity-50" disabled type="submit">
+            <button type="submit" class="w-2/5 mr-5 py-20 bg-white text-xl font-bold disabled:cursor-not-allowed disabled:opacity-50"<?php if("btn_display['btn_start_attendance']" == false){ ?> disabled <?php } ?>>
                 勤務開始
             </button>
-            <button class="w-2/5 ml-5 py-20 bg-white text-xl font-bold" type="submit">
+            <button type="submit" class="w-2/5 ml-5 py-20 bg-white text-xl font-bold disabled:cursor-not-allowed disabled:opacity-50" <?php if("btn_display['btn_end_attendance']" == false){ ?> disabled <?php } ?>>
                 勤務終了
             </button>
-            <button class="w-2/5 mr-5 my-10 py-20 bg-white text-xl font-bold" type="submit">
+            <button type="submit" class="w-2/5 mr-5 my-10 py-20 bg-white text-xl font-bold disabled:cursor-not-allowed disabled:opacity-50" <?php if("btn_display['btn_start_rest']" == false){ ?> disabled <?php } ?>>
                 休憩開始
             </button>
-            <button class="w-2/5 ml-5 my-10 py-20 bg-white text-xl font-bold" type="submit">
+            <button type="submit" class="w-2/5 ml-5 my-10 py-20 bg-white text-xl font-bold disabled:cursor-not-allowed disabled:opacity-50" <?php if("btn_display['btn_start_rest']" == false){ ?> disabled <?php } ?>>
                 休憩終了
             </button>
         </form>     
