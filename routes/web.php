@@ -11,8 +11,8 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [AttendanceController::class, 'index'])->name('dashboard');
 Route::post('/start_attendance', [AttendanceController::class, 'start_attendance']);
-Route::get('/end_attendance', [AttendanceController::class, 'end_attendance']);
-Route::get('/start_rest', [AttendanceController::class, 'start_rest']);
-Route::get('/end_rest', [AttendanceController::class, 'end_rest']);
+Route::post('/end_attendance', [AttendanceController::class, 'end_attendance']);
+Route::post('/start_rest', [AttendanceController::class, 'start_rest']);
+Route::post('/end_rest', [AttendanceController::class, 'end_rest']);
 
 Route::get('/attendancedatelist', [AttendanceController::class, 'datelist'])->name('attendancedatelist');

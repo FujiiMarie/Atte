@@ -20,7 +20,6 @@ class AttendanceController extends Controller
         $btn_start_rest = false;
         $btn_end_rest = false;
 
-        // $user = Auth::user();←不要？
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
         $now = Carbon::now()->format('H:i:s');
@@ -79,35 +78,43 @@ class AttendanceController extends Controller
         );
     }
 
-    public function start_attendance(){//勤務開始
-        if (empty($attendance['start_time'])){
-            $attendance = Attendance::create(['start_time' => Carbon::now()]);
+    public function start_attendance(Request $request){//勤務開始
+        if($attendance['start_time'] = null){
+            Attendance::create(['start_time' => Carbon::now()]);
+            return redirect('/')->with('result', '勤務開始を記録しました');
+        }else{
+            return redirect('/')->with('result', '既に勤務開始済みです');
         }
-        return redirect('/')->with('result', '勤務開始を記録しました');
     }
 
-    public function start_rest(){//休憩開始
-        if (empty($rest['start_rest'])){
-            $rest = Rest::create(['start_rest' => Carbon::now()]);
+    public function start_rest(Request $request){//休憩開始
+        if($rest['start_rest'] = null){
+            Rest::create(['start_rest' => Carbon::now()]);
+            return redirect('/')->with('result', '休憩開始を記録しました');
+        }else{
+            return redirect('/')->with('result', '既に休憩開始済みです');
         }
-        return redirect('/')->with('result', '休憩開始を記録しました');
     }
 
-    public function end_rest(){//休憩終了
-        if (empty($rest['end_rest'])){
-            $rest = Rest::create(['end_rest' => Carbon::now()]);
+    public function end_rest(Request $request){//休憩終了
+        if($rest['end_rest'] = null){
+            Rest::create(['end_rest' => Carbon::now()]);
+            return redirect('/')->with('result', '休憩終了を記録しました');
+        }else{
+            return redirect('/')->with('result', '既に休憩終了済みです');
         }
-        return redirect('/')->with('result', '休憩終了を記録しました');
     }
 
-    public function end_attendance(){//勤務終了
-        if (empty($attendance['end_time'])){
-            $attendance = Attendance::create(['end_time' => Carbon::now()]);
+    public function end_attendance(Request $request){//勤務終了
+        if($attendance['end_rest'] = null){
+            Attendance::create(['end_time' => Carbon::now()]);
+            return redirect('/')->with('result', '勤務終了を記録しました');
+        }else{
+            return redirect('/')->with('result', '既に勤務終了済みです');
         }
-        return redirect('/')->with('result', '勤務終了を記録しました');
     }
     
-    public function datelist()//日付一覧ページ
+    public function datelist(Request $request)//日付一覧ページ
     {
         $items = Attendance::all();
         return view('attendancedatelist', ['items' => $items]);
