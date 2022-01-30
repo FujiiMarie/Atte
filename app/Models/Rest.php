@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rest extends Model
 {
-    use HasFactory;
+    protected $fillable = ['user_id', 'work_day', 'start_rest', 'end_rest'];
 }
