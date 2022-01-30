@@ -106,8 +106,9 @@ class AttendanceController extends Controller
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
         $start_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('start_rest');
+        $end_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('end_rest');
 
-        if($start_rest == null){
+        if($start_rest == null || $end_rest != null){//休憩開始がないか、もしくは休憩終了があるか
             Rest::create([
             // insert into rests(user_id, work_day, start_rest) values(1, 2022-01-30,  10:00:00);
                 'user_id' => Auth::id(),
@@ -123,10 +124,11 @@ class AttendanceController extends Controller
     public function end_rest(Request $request){//休憩終了
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
+        $start_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('start_rest');        
         $end_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('end_rest');
 
-        if($end_rest == null){
-            Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', $end_rest)->update([
+        if($end_rest == null || $start_rest != null){
+            Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', null)->update([
             // update rests set end_rest = 2022/01/30 11:00:00 where user_id = $user_id and work_day = $work_day and end_rest = Null;
                 'user_id' => Auth::id(),
                 'work_day' => Carbon::today()->format('Y-m-d'),
@@ -144,7 +146,6 @@ class AttendanceController extends Controller
         $today = Carbon::today()->format('Y-m-d');
         $end_time = Attendance::where('user_id', $user_id)->where('work_day', $today)->value('end_time');
 
-        //select end_time from attendances;
         if($end_time == null){
             Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', $end_time)->update([
             // update attendance set end_time = 2022/01/30 12:00:00 where user_id = $user_id and work_day = $work_day end_time = Null;
