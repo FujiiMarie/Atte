@@ -135,6 +135,11 @@ class AttendanceController extends Controller
                 'end_rest' => Carbon::now()->format('H:i:s'),
             ]);
 
+            //select timediff('2022-01-30 16:11', '2022-01-30 13:28') as t_diff from rests
+            //$from_rest_time = new Carbon('2022-01-30 13:28');
+            //$to_rest_time = new Carbon('2022-01-30 16:11');
+            //echo $from_rest_time->diffInSeconds($to_rest_time);
+
             return redirect('/')->with('result', '休憩終了を記録しました');
         }else{
             return redirect('/')->with('result', '既に休憩終了済みです');
@@ -162,7 +167,12 @@ class AttendanceController extends Controller
     
     public function datelist(Request $request)//日付一覧ページ
     {
+        $work_days = Attendance::groupBy('work_day')->get('work_day');//日付重複削除
         $items = Attendance::all();
-        return view('attendancedatelist', ['items' => $items]);
+        
+        return view('attendancedatelist',
+            ['work_days' => $work_days],
+            ['items' => $items]
+        );
     }
 }

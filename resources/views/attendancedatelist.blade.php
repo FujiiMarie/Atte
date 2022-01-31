@@ -2,9 +2,9 @@
     
     <x-slot name="slot">
         <div class="py-12">
-            @foreach ($items as $item)
+            @foreach ($work_days as $work_day)
             <div class="flex justify-center text-xl font-bold pb-12">
-                {{$item->work_day}}
+                {{$work_day->work_day}}
             </div>
             @endforeach
             <table class="w-11/12 mx-auto">
@@ -16,12 +16,12 @@
                     <th>勤務時間</th>
                 </tr>
                 @foreach ($items as $item)
-                <tr class="border-t border-gray-400 h-16">
-                    <td>{{$item->user_id}}</td>
-                    <td>{{$item->start_time}}</td>
-                    <td>{{$item->end_time}}</td>
-                    <td>休憩時間のデータ</td>
-                    <td>勤務時間のデータ</td>
+                <tr class="border-t border-gray-400 h-16 mx-1">
+                    <td class="w-1/12">{{$item->user_id}}</td>
+                    <td class="w-1/12">{{$item->start_time}}</td>
+                    <td class="w-1/12">{{$item->end_time}}</td>
+                    <td class="w-1/12">休憩時間のデータ</td>
+                    <td class="w-1/12">勤務時間のデータ</td>
                 </tr>
                 @endforeach
             </table>
