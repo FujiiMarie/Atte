@@ -2,11 +2,11 @@
     
     <x-slot name="slot">
         <div class="py-12">
-            @foreach ($work_days as $work_day)
+            
             <div class="flex justify-center text-xl font-bold pb-12">
-                {{$work_day->work_day}}
+                {{$work_days->links()}}
             </div>
-            @endforeach
+            
             <table class="w-11/12 mx-auto">
                 <tr class="border-t border-gray-400 h-16">
                     <th>名前</th>
@@ -25,8 +25,9 @@
                 </tr>
                 @endforeach
             </table>
+
             <div class="flex justify-center text-xl font-bold pt-12">
-                ここにページネーション入れる
+                {{$items->links()}}
             </div>
         </div>
     </x-slot>

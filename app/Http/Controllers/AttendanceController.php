@@ -123,26 +123,27 @@ class AttendanceController extends Controller
 
     public function end_rest(Request $request){//休憩終了
         $user_id = Auth::id();
-        $today = Carbon::today()->format('Y-m-d');
-        $start_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('start_rest');        
-        $end_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('end_rest');
+        $today = Carbon::today()->format('Y-m-d');        
+        $rest_val = Rest::where('user_id', $user_id)->where('work_day', $today)->whereNull('end_rest')->first();
 
-        if($end_rest == null || $start_rest != null){
+        if($rest_val == null){
+
+            return redirect('/')->with('result', '休憩中ではありません');
+
+        }else{
+            //select timediff('2022-01-30 16:11', '2022-01-30 13:28')
+            $start_rest = new Carbon($rest_val->work_day.' '.$rest_val->start_rest);
+            $end_rest = Carbon::now();
+            $rest_time = $start_rest->diffInSeconds($end_rest);
+
             Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', null)->update([
             // update rests set end_rest = 2022/01/30 11:00:00 where user_id = $user_id and work_day = $work_day and end_rest = Null;
                 'user_id' => Auth::id(),
-                'work_day' => Carbon::today()->format('Y-m-d'),
                 'end_rest' => Carbon::now()->format('H:i:s'),
+                'rest_time' => $rest_time
             ]);
 
-            //select timediff('2022-01-30 16:11', '2022-01-30 13:28') as t_diff from rests
-            //$from_rest_time = new Carbon('2022-01-30 13:28');
-            //$to_rest_time = new Carbon('2022-01-30 16:11');
-            //echo $from_rest_time->diffInSeconds($to_rest_time);
-
-            return redirect('/')->with('result', '休憩終了を記録しました');
-        }else{
-            return redirect('/')->with('result', '既に休憩終了済みです');
+            return redirect('/')->with('result', '休憩終了を記録しました');            
         }
     }
 
@@ -167,12 +168,12 @@ class AttendanceController extends Controller
     
     public function datelist(Request $request)//日付一覧ページ
     {
-        $work_days = Attendance::groupBy('work_day')->get('work_day');//日付重複削除
-        $items = Attendance::all();
+        $work_days = Attendance::orderBy('created_at', 'desc')->simplePaginate(1);
+        $items = Attendance::Paginate(5);
         
         return view('attendancedatelist',
             ['work_days' => $work_days],
-            ['items' => $items]
+            ['items' => $items],
         );
     }
 }
