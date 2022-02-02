@@ -12,7 +12,6 @@ use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-    //ホーム
     public function index(Request $request)//ログイン時にどのボタンが押せるかの画面表示
     {
         $btn_start_attendance = false;
@@ -26,15 +25,11 @@ class AttendanceController extends Controller
         $attendance = Attendance::where('user_id', $user_id)->where('work_day', $today)->first();
         // $attendanceの中身{id,user_id,work_day,start_time,end_time,create_date,update_date}
 
-        $attendance_s_t = Attendance::where('user_id', $user_id)->where('work_day', $today)->value('start_time');
-
         //デバッグ
         Log::alert('useridの出力調査', ['Auth_user_id' => $user_id]);
         Log::alert('今日の出力調査', ['today' => $today]);
         Log::alert('現在時刻の出力調査', ['now' => $now]);
         Log::alert('attendanceの出力調査', ['attendance' => $attendance]);
-
-        Log::alert('attendance_s_tの出力調査', ['attendance_s_t' => $attendance_s_t]);
 
         //①今日出勤しているかどうか？
         if($attendance != null){ //データがある場合:「勤務開始」ボタンが押せない
@@ -133,14 +128,14 @@ class AttendanceController extends Controller
         }else{
             //select timediff('2022-01-30 16:11', '2022-01-30 13:28')
             $start_rest = new Carbon($rest_val->work_day.' '.$rest_val->start_rest);
-            $end_rest = Carbon::now();
-            $rest_time = $start_rest->diffInSeconds($end_rest);
+            $end_rest = Carbon::now()->format('H:i:s');
+            $total_rest_time = $start_rest->diffInSeconds($end_rest);
 
             Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', null)->update([
             // update rests set end_rest = 2022/01/30 11:00:00 where user_id = $user_id and work_day = $work_day and end_rest = Null;
                 'user_id' => Auth::id(),
                 'end_rest' => Carbon::now()->format('H:i:s'),
-                'rest_time' => $rest_time
+                'rest_time' => $total_rest_time
             ]);
 
             return redirect('/')->with('result', '休憩終了を記録しました');            
@@ -150,19 +145,25 @@ class AttendanceController extends Controller
     public function end_attendance(Request $request){//勤務終了
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
-        $end_time = Attendance::where('user_id', $user_id)->where('work_day', $today)->value('end_time');
+        $attendance_val = Attendance::where('user_id', $user_id)->where('work_day', $today)->whereNull('end_time')->first();
 
-        if($end_time == null){
-            Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', $end_time)->update([
+        if($attendance_val == null){
+
+            return redirect('/')->with('result', '既に勤務終了済みです');
+
+        }else{
+            $start_time = new Carbon($attendance_val->work_day.' '.$attendance_val->start_time);
+            $end_time = Carbon::now()->format('H:i:s');
+            $total_work_time = $start_time->diffInSeconds($end_time);
+
+            Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', null)->update([
             // update attendance set end_time = 2022/01/30 12:00:00 where user_id = $user_id and work_day = $work_day end_time = Null;
                 'user_id' => Auth::id(),
-                'work_day' => Carbon::today()->format('Y-m-d'),
                 'end_time' => Carbon::now()->format('H:i:s'),
+                'total_work_time' => $total_work_time
             ]);
 
             return redirect('/')->with('result', '勤務終了を記録しました');
-        }else{
-            return redirect('/')->with('result', '既に勤務終了済みです');
         }
     }
     
