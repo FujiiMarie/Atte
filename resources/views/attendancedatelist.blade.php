@@ -21,7 +21,7 @@
                     <td class="w-1/12">{{$item->start_time}}</td>
                     <td class="w-1/12">{{$item->end_time}}</td>
                     <td class="w-1/12">休憩時間のデータ</td>
-                    <td class="w-1/12">勤務時間のデータ</td>
+                    <td class="w-1/12">{{$item->total_work_time}}</td>
                 </tr>
                 @endforeach
             </table>

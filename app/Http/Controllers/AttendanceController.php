@@ -169,12 +169,69 @@ class AttendanceController extends Controller
     
     public function datelist(Request $request)//日付一覧ページ
     {
-        $work_days = Attendance::orderBy('created_at', 'desc')->simplePaginate(1);
-        $items = Attendance::Paginate(5);
-        
+        //何日のデータか？
+        //何ページ目の情報か？
+        $display_date = $request['display_date'];
+
+        //defaultの処理
+        if($display_date == null){
+            $display_date = Carbon::today()->format('Y-m-d');
+        }
+
+        //SELECT users.id, attendances.user_id, name FROM users LEFT JOIN attendances ON users.id = attendances.user_id
+        $attendance_list = Attendance::select([
+            'users.id as id',
+            'attendances.user_id as user_id',
+            'users.name as name',
+            'attendances.start_time as start_time',
+            'attendances.end_time as end_time',
+            'attendances.total_work_time as total_work_time',
+        ])
+            ->from('users')
+            ->join('attendances', function($join){
+                $join->on('users.id', '=', 'attendances.user_id');
+            })
+            ->where('attendances.work_day',$display_date)
+            ->orderBy('created_at', 'desc')
+            ->simplePaginate(5);
+            
+            Log::alert('$attendance_listの出力調査', ['$attendance_list' => $attendance_list]);
+
+        //①php上でrestsテーブルの合計を計算する
+        foreach($attendance_list as $attendance_data){
+            $user_id = $attendance_data['user_id'];
+            $rests_list = Rest::where('work_day',$display_date)->where('user_id',$user_id)->get();
+
+            $rest_sum = 0;//休憩時間の合計
+            foreach ($rests_list as $rest_data){
+                $rest_sum =  $rest_sum +  $rest_data['rest_time'];
+            }
+
+            //phpのlistオブジェクトの中身の配列にrest_sum(合計休憩時間)を入れる。
+            //（※値を入れると元の$attendance_listの中身も更新される）
+            $attendance_data['rest_sum'] = $rest_sum;//休憩時間
+        }
+
+        /*
+         * 画面で表示させたい項目
+         *
+         * 名前
+         * 勤務開始
+         * 勤務終了
+         * 休憩時間
+         * 勤務時間
+         *
+         * $attendance_data =  $attendance_list[1]
+         *
+         * $attendance_data['名前'] ->name
+         * $attendance_data['勤務開始'] ->start_time
+         * $attendance_data['勤務終了'] ->end_time
+         * $attendance_data['休憩時間'] ->rest_sum
+         * $attendance_data['勤務時間'] ->total_work_time
+         */
         return view('attendancedatelist',
-            ['work_days' => $work_days],
-            ['items' => $items],
+            ['work_days' => $display_date],
+            ['attendance_list' => $attendance_list]
         );
     }
 }
