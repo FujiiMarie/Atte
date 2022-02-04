@@ -4,7 +4,7 @@
         <div class="py-12">
 
             <div class="flex justify-center text-xl font-bold pb-12">
-                
+                {{ $work_days }}
             </div>
 
             <table class="w-11/12 mx-auto">

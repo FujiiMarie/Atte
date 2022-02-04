@@ -166,16 +166,7 @@ class AttendanceController extends Controller
     {
         //何日のデータか？
         //何ページ目の情報か？
-        /* 画面で表示させたい項目
-         * 
-         * $attendance_data =  $attendance_list[1]
-         *
-         * $attendance_data['名前'] ->name
-         * $attendance_data['勤務開始'] ->start_time
-         * $attendance_data['勤務終了'] ->end_time
-         * $attendance_data['休憩時間'] ->rest_sum
-         * $attendance_data['勤務時間'] ->total_work_time
-         */
+
         $display_date = $request['display_date'];
 
         //defaultの処理
@@ -217,6 +208,17 @@ class AttendanceController extends Controller
 
             Log::alert('$rest_sumの出力調査', ['$rest_sum' => $rest_sum]);
         }
+
+        /* 画面で表示させたい項目
+         * 
+         * $attendance_data =  $attendance_list[1]
+         *
+         * $attendance_data['名前'] ->name
+         * $attendance_data['勤務開始'] ->start_time
+         * $attendance_data['勤務終了'] ->end_time
+         * $attendance_data['休憩時間'] ->rest_sum
+         * $attendance_data['勤務時間'] ->total_work_time
+         */
 
         return view('attendancedatelist',
             ['work_days' => $display_date],
