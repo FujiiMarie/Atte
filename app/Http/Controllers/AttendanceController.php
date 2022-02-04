@@ -86,7 +86,6 @@ class AttendanceController extends Controller
 
         if($start_time == null){
             Attendance::create([
-            // insert into attendances(user_id, work_day, start_time) values(1, 2022-01-30, 09:00:00);
                 'user_id' => Auth::id(),
                 'work_day' => Carbon::today()->format('Y-m-d'),
                 'start_time' => Carbon::now()->format('H:i:s')
@@ -104,8 +103,7 @@ class AttendanceController extends Controller
         $end_rest = Rest::where('user_id', $user_id)->where('work_day', $today)->value('end_rest');
 
         if($start_rest == null || $end_rest != null){//休憩開始がないか、もしくは休憩終了があるか
-            Rest::create([
-            // insert into rests(user_id, work_day, start_rest) values(1, 2022-01-30,  10:00:00);
+            Rest::create([  
                 'user_id' => Auth::id(),
                 'work_day' => Carbon::today()->format('Y-m-d'),
                 'start_rest' => Carbon::now()->format('H:i:s'),
@@ -126,13 +124,11 @@ class AttendanceController extends Controller
             return redirect('/')->with('result', '休憩中ではありません');
 
         }else{
-            //select timediff('2022-01-30 16:11', '2022-01-30 13:28')
             $start_rest = new Carbon($rest_val->work_day.' '.$rest_val->start_rest);
             $end_rest = Carbon::now()->format('H:i:s');
             $total_rest_time = $start_rest->diffInSeconds($end_rest);
 
             Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', null)->update([
-            // update rests set end_rest = 2022/01/30 11:00:00 where user_id = $user_id and work_day = $work_day and end_rest = Null;
                 'user_id' => Auth::id(),
                 'end_rest' => Carbon::now()->format('H:i:s'),
                 'rest_time' => $total_rest_time
@@ -157,7 +153,6 @@ class AttendanceController extends Controller
             $total_work_time = $start_time->diffInSeconds($end_time);
 
             Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', null)->update([
-            // update attendance set end_time = 2022/01/30 12:00:00 where user_id = $user_id and work_day = $work_day end_time = Null;
                 'user_id' => Auth::id(),
                 'end_time' => Carbon::now()->format('H:i:s'),
                 'total_work_time' => $total_work_time
@@ -171,6 +166,16 @@ class AttendanceController extends Controller
     {
         //何日のデータか？
         //何ページ目の情報か？
+        /* 画面で表示させたい項目
+         * 
+         * $attendance_data =  $attendance_list[1]
+         *
+         * $attendance_data['名前'] ->name
+         * $attendance_data['勤務開始'] ->start_time
+         * $attendance_data['勤務終了'] ->end_time
+         * $attendance_data['休憩時間'] ->rest_sum
+         * $attendance_data['勤務時間'] ->total_work_time
+         */
         $display_date = $request['display_date'];
 
         //defaultの処理
@@ -178,7 +183,6 @@ class AttendanceController extends Controller
             $display_date = Carbon::today()->format('Y-m-d');
         }
 
-        //SELECT users.id, attendances.user_id, name FROM users LEFT JOIN attendances ON users.id = attendances.user_id
         $attendance_list = Attendance::select([
             'users.id as id',
             'attendances.user_id as user_id',
@@ -192,7 +196,7 @@ class AttendanceController extends Controller
                 $join->on('users.id', '=', 'attendances.user_id');
             })
             ->where('attendances.work_day',$display_date)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('attendances.created_at', 'desc')
             ->simplePaginate(5);
             
             Log::alert('$attendance_listの出力調査', ['$attendance_list' => $attendance_list]);
@@ -204,31 +208,16 @@ class AttendanceController extends Controller
 
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
-                $rest_sum =  $rest_sum +  $rest_data['rest_time'];
+                $rest_sum =  $rest_sum + $rest_data['rest_sum'];
             }
 
             //phpのlistオブジェクトの中身の配列にrest_sum(合計休憩時間)を入れる。
             //（※値を入れると元の$attendance_listの中身も更新される）
             $attendance_data['rest_sum'] = $rest_sum;//休憩時間
+
+            Log::alert('$rest_sumの出力調査', ['$rest_sum' => $rest_sum]);
         }
 
-        /*
-         * 画面で表示させたい項目
-         *
-         * 名前
-         * 勤務開始
-         * 勤務終了
-         * 休憩時間
-         * 勤務時間
-         *
-         * $attendance_data =  $attendance_list[1]
-         *
-         * $attendance_data['名前'] ->name
-         * $attendance_data['勤務開始'] ->start_time
-         * $attendance_data['勤務終了'] ->end_time
-         * $attendance_data['休憩時間'] ->rest_sum
-         * $attendance_data['勤務時間'] ->total_work_time
-         */
         return view('attendancedatelist',
             ['work_days' => $display_date],
             ['attendance_list' => $attendance_list]
