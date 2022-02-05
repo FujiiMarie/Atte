@@ -20,7 +20,7 @@
                     <td class="w-1/12">{{$attendance_list->name}}</td>
                     <td class="w-1/12">{{$attendance_list->start_time}}</td>
                     <td class="w-1/12">{{$attendance_list->end_time}}</td>
-                    <td class="w-1/12">休憩合計{{$attendance_list->rest_time}}</td>
+                    <td class="w-1/12">{{$attendance_list->rest_sum}}</td>
                     <td class="w-1/12">{{$attendance_list->total_work_time}}</td>
                 </tr>
                 @endforeach

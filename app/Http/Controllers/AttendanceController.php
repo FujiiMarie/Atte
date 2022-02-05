@@ -199,7 +199,8 @@ class AttendanceController extends Controller
 
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
-                $rest_sum =  $rest_sum + $rest_data['rest_sum'];
+                Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
+                $rest_sum =  $rest_sum + $rest_data['rest_time'];//rest_timeが取れていない？
             }
 
             //phpのlistオブジェクトの中身の配列にrest_sum(合計休憩時間)を入れる。
@@ -207,19 +208,9 @@ class AttendanceController extends Controller
             $attendance_data['rest_sum'] = $rest_sum;//休憩時間
 
             Log::alert('$rest_sumの出力調査', ['$rest_sum' => $rest_sum]);
+            Log::alert('$attendance_dataの出力調査', ['$attendance_data' => $attendance_data]);
         }
-
-        /* 画面で表示させたい項目
-         * 
-         * $attendance_data =  $attendance_list[1]
-         *
-         * $attendance_data['名前'] ->name
-         * $attendance_data['勤務開始'] ->start_time
-         * $attendance_data['勤務終了'] ->end_time
-         * $attendance_data['休憩時間'] ->rest_sum
-         * $attendance_data['勤務時間'] ->total_work_time
-         */
-
+        
         return view('attendancedatelist',
             ['work_days' => $display_date],
             ['attendance_list' => $attendance_list]
