@@ -199,7 +199,7 @@ class AttendanceController extends Controller
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
                 Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
-                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていない？
+                $rest_sum =  $rest_sum + $rest_data['rest_time'];//rest_timeが取れていない？
             }
 
             //phpのlistオブジェクトの中身の配列にrest_sum(合計休憩時間)を入れる。
@@ -251,7 +251,7 @@ class AttendanceController extends Controller
 
             $rest_sum = 0;
             foreach ($rests_list as $rest_data){
-                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていない？
+                $rest_sum =  $rest_sum + $rest_data['rest_time'];//rest_timeが取れていない？
             }
             $attendance_data['rest_sum'] = $rest_sum;
         }
