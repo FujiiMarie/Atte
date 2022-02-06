@@ -16,3 +16,4 @@ Route::post('/start_rest', [AttendanceController::class, 'start_rest']);
 Route::post('/end_rest', [AttendanceController::class, 'end_rest']);
 
 Route::get('/attendancedatelist', [AttendanceController::class, 'datelist'])->name('attendancedatelist');
+Route::post('/attendancedatelist', [AttendanceController::class, 'other_day'])->name('attendancedatelist');

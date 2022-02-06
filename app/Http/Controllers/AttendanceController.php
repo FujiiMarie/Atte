@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Attendance;
 use App\Models\Rest;
 use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
 
 class AttendanceController extends Controller
 {
@@ -164,14 +165,12 @@ class AttendanceController extends Controller
     
     public function datelist(Request $request)//日付一覧ページ
     {
-        //何日のデータか？
-        //何ページ目の情報か？
-
         $display_date = $request['display_date'];
 
         //defaultの処理
         if($display_date == null){
             $display_date = Carbon::today()->format('Y-m-d');
+            Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);
         }
 
         $attendance_list = Attendance::select([
@@ -188,7 +187,7 @@ class AttendanceController extends Controller
             })
             ->where('attendances.work_day',$display_date)
             ->orderBy('attendances.created_at', 'desc')
-            ->simplePaginate(5);
+            ->paginate(2);
             
             Log::alert('$attendance_listの出力調査', ['$attendance_list' => $attendance_list]);
 
@@ -200,7 +199,7 @@ class AttendanceController extends Controller
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
                 Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
-                $rest_sum =  $rest_sum + $rest_data['rest_time'];//rest_timeが取れていない？
+                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていない？
             }
 
             //phpのlistオブジェクトの中身の配列にrest_sum(合計休憩時間)を入れる。
@@ -212,8 +211,54 @@ class AttendanceController extends Controller
         }
         
         return view('attendancedatelist',
-            ['work_days' => $display_date],
-            ['attendance_list' => $attendance_list]
+            ['display_date' => $display_date],
+            ['attendance_list' => $attendance_list],
         );
+    }
+
+    public function other_day(Request $request)
+    {
+        $display_date = $request['display_date'];
+        $select_day = $request['select_day'];
+        
+        Log::alert('$select_dayの出力調査', ['$select_day' => $select_day]);
+        
+        if($select_day == "back"){
+            $display_date = date("Y-m-d", strtotime("-1 day"));
+        }else if($select_day == "next"){
+            $display_date = date("Y-m-d", strtotime("+1 day"));
+        }
+
+        $attendance_list = Attendance::select([
+            'users.id as id',
+            'attendances.user_id as user_id',
+            'users.name as name',
+            'attendances.start_time as start_time',
+            'attendances.end_time as end_time',
+            'attendances.total_work_time as total_work_time',
+        ])
+            ->from('users')
+            ->join('attendances', function($join){
+                $join->on('users.id', '=', 'attendances.user_id');
+            })
+            ->where('attendances.work_day',$display_date)
+            ->orderBy('attendances.created_at', 'desc')
+            ->paginate(2);
+
+        foreach($attendance_list as $attendance_data){
+            $user_id = $attendance_data['user_id'];
+            $rests_list = Rest::where('work_day',$display_date)->where('user_id',$user_id)->get();
+
+            $rest_sum = 0;
+            foreach ($rests_list as $rest_data){
+                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていない？
+            }
+            $attendance_data['rest_sum'] = $rest_sum;
+        }
+        
+        return view('attendancedatelist',
+            ['display_date' => $display_date],
+            ['attendance_list' => $attendance_list],
+        );    
     }
 }
