@@ -199,12 +199,10 @@ class AttendanceController extends Controller
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
                 Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
-                $rest_sum =  $rest_sum + $rest_data['rest_time'];//rest_timeが取れていない？
+                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていなくエラーが出るためとりあえずrest_sumにしています
             }
 
-            //phpのlistオブジェクトの中身の配列にrest_sum(合計休憩時間)を入れる。
-            //（※値を入れると元の$attendance_listの中身も更新される）
-            $attendance_data['rest_sum'] = $rest_sum;//休憩時間
+            $attendance_data['rest_sum'] = $rest_sum;
 
             Log::alert('$rest_sumの出力調査', ['$rest_sum' => $rest_sum]);
             Log::alert('$attendance_dataの出力調査', ['$attendance_data' => $attendance_data]);
@@ -218,16 +216,16 @@ class AttendanceController extends Controller
 
     public function other_day(Request $request)
     {
-        $display_date = $request['display_date'];
         $select_day = $request['select_day'];
-        
-        Log::alert('$select_dayの出力調査', ['$select_day' => $select_day]);
+        Log::alert('$select_dayの出力調査', ['$select_day' => $select_day]);//back,nextどちらかは取れている
         
         if($select_day == "back"){
             $display_date = date("Y-m-d", strtotime("-1 day"));
         }else if($select_day == "next"){
             $display_date = date("Y-m-d", strtotime("+1 day"));
         }
+
+        Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);//表示されている日付が取得されている
 
         $attendance_list = Attendance::select([
             'users.id as id',
@@ -251,7 +249,7 @@ class AttendanceController extends Controller
 
             $rest_sum = 0;
             foreach ($rests_list as $rest_data){
-                $rest_sum =  $rest_sum + $rest_data['rest_time'];//rest_timeが取れていない？
+                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていなくエラーが出るためとりあえずrest_sumにしています
             }
             $attendance_data['rest_sum'] = $rest_sum;
         }
