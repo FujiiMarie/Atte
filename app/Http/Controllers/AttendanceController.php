@@ -153,6 +153,8 @@ class AttendanceController extends Controller
             $end_time = Carbon::now()->format('H:i:s');
             $total_work_time = $start_time->diffInSeconds($end_time);
 
+            Log::alert('$total_work_timeの出力調査', ['$total_work_time' => $total_work_time]);
+
             Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', null)->update([
                 'user_id' => Auth::id(),
                 'end_time' => Carbon::now()->format('H:i:s'),
@@ -199,7 +201,7 @@ class AttendanceController extends Controller
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
                 Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
-                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていなくエラーが出るためとりあえずrest_sumにしています
+                $rest_sum =  $rest_sum + $rest_data['rest_time'];
             }
 
             $attendance_data['rest_sum'] = $rest_sum;
@@ -249,7 +251,7 @@ class AttendanceController extends Controller
 
             $rest_sum = 0;
             foreach ($rests_list as $rest_data){
-                $rest_sum =  $rest_sum + $rest_data['rest_sum'];//rest_timeが取れていなくエラーが出るためとりあえずrest_sumにしています
+                $rest_sum =  $rest_sum + $rest_data['rest_time'];
             }
             $attendance_data['rest_sum'] = $rest_sum;
         }

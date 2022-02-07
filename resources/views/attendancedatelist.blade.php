@@ -21,20 +21,20 @@
             </div>
 
             <table class="w-11/12 mx-auto">
-                <tr class="border-t border-gray-400 h-16">
-                    <th>名前</th>
-                    <th>勤務開始</th>
-                    <th>勤務終了</th>
-                    <th>休憩時間</th>
-                    <th>勤務時間</th>
+                <tr class="border-t border-gray-400 h-16 text-left">
+                    <th class="pl-8">名前</th>
+                    <th class="pl-8">勤務開始</th>
+                    <th class="pl-8">勤務終了</th>
+                    <th class="pl-8">休憩時間</th>
+                    <th class="pl-8">勤務時間</th>
                 </tr>
                 @foreach ($attendance_list as $attendance)
-                <tr class="border-t border-gray-400 h-16 mx-1">
-                    <td class="w-1/12">{{$attendance->name}}</td>
-                    <td class="w-1/12">{{$attendance->start_time}}</td>
-                    <td class="w-1/12">{{$attendance->end_time}}</td>
-                    <td class="w-1/12">{{$attendance->rest_sum}}</td>
-                    <td class="w-1/12">{{$attendance->total_work_time}}</td>
+                <tr class="border-t border-gray-400 h-16">
+                    <td class="pl-8">{{$attendance->name}}</td>
+                    <td class="pl-8">{{$attendance->start_time}}</td>
+                    <td class="pl-8">{{$attendance->end_time}}</td>
+                    <td class="pl-8">{{$attendance->rest_sum}}</td>
+                    <td class="pl-8">{{$attendance->total_work_time}}</td>
                 </tr>
                 @endforeach
             </table>

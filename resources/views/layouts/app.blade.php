@@ -34,7 +34,7 @@
                 <x-nav-link>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <input type="submit" value="ログアウト">
+                        <button type="submit" class="font-bold">{{ __('ログアウト') }}</button>
                     </form>
                 </x-nav-link>
             </div>
