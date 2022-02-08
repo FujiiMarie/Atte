@@ -26,12 +26,6 @@ class AttendanceController extends Controller
         $attendance = Attendance::where('user_id', $user_id)->where('work_day', $today)->first();
         // $attendanceの中身{id,user_id,work_day,start_time,end_time,create_date,update_date}
 
-        //デバッグ
-        Log::alert('useridの出力調査', ['Auth_user_id' => $user_id]);
-        Log::alert('今日の出力調査', ['today' => $today]);
-        Log::alert('現在時刻の出力調査', ['now' => $now]);
-        Log::alert('attendanceの出力調査', ['attendance' => $attendance]);
-
         //①今日出勤しているかどうか？
         if($attendance != null){ //データがある場合:「勤務開始」ボタンが押せない
 
@@ -201,18 +195,26 @@ class AttendanceController extends Controller
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
                 Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
-                $rest_sum =  $rest_sum + $rest_data['rest_time'];
+                $rest_sum =  $rest_sum + $rest_data['rest_time'];       
             }
 
             $attendance_data['rest_sum'] = $rest_sum;
 
             Log::alert('$rest_sumの出力調査', ['$rest_sum' => $rest_sum]);
             Log::alert('$attendance_dataの出力調査', ['$attendance_data' => $attendance_data]);
+
+            $seconds = $rest_sum;
+            $hours = floor($seconds / 3600);
+            $minutes = floor(($seconds / 60) % 60);
+            $seconds = $seconds % 60;
+            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+            Log::alert('$hmsの出力調査', ['$hms' => $hms]);
         }
         
         return view('attendancedatelist',
             ['display_date' => $display_date],
             ['attendance_list' => $attendance_list],
+            ['hms' => $hms]
         );
     }
 
