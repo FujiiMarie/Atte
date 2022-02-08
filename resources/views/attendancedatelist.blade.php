@@ -5,6 +5,8 @@
             <div class="flex flex-no-wrap justify-center gap-x-10">
                 <form action="/attendancedatelist" method="post">
                     @csrf
+                    <!-- 見えないinputタグで$display_dateを渡す -->
+                    <input type="hidden" name="display_date" value="{{ $display_date }}">
                     <button type="submit" name="select_day" value="back" class="bg-white px-3 text-xl font-bold text-blue-600 border border-blue-600">
                         <
                     </button>
@@ -14,6 +16,8 @@
                 </div>
                 <form action="/attendancedatelist" method="post">
                     @csrf
+                    <!-- 見えないinputタグで$display_dateを渡す -->
+                    <input type="hidden" name="display_date" value="{{ $display_date }}">
                     <button type="submit" name="select_day" value="next" class="bg-white px-3 text-xl font-bold text-blue-600 border border-blue-600">
                         >
                     </button>

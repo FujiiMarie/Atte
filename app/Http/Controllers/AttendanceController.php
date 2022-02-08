@@ -204,7 +204,16 @@ class AttendanceController extends Controller
             $minutes = floor(($seconds / 60) % 60);
             $seconds = $seconds % 60;
             $hms = $hours.':'.$minutes.':'.$seconds;
+            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);//$hms = $hours.':'.$minutes.':'.$seconds;
             $attendance_data['rest_sum'] = $hms;
+
+            $work_seconds = $attendance_data['total_work_time'];
+            $work_hours = floor($work_seconds / 3600);
+            $work_minutes = floor(($work_seconds / 60) % 60);
+            $work_seconds = $work_seconds % 60;
+            $work_hms = $work_hours.':'.$work_minutes.':'.$work_seconds;
+            $work_hms = sprintf("%02d:%02d:%02d", $work_hours, $minutes, $work_seconds);
+            $attendance_data['total_work_time'] = $work_hms;
         }
 
         return view('attendancedatelist',
@@ -215,16 +224,18 @@ class AttendanceController extends Controller
 
     public function other_day(Request $request)
     {
-        $display_date = $request['display_date'];
-        Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);//null
+        $request_date = $request['display_date'];
+        Log::alert('$request_dateの出力調査', ['$requestdate' => $request_date]);//null
 
         $select_day = $request['select_day'];
         Log::alert('$select_dayの出力調査', ['$select_day' => $select_day]);//back,nextどちらかは取れている
         
         if($select_day == "back"){
-            $display_date = date("Y-m-d", strtotime("-1 day"));
+            // $request_dateを基準にした1日前の日付を$display_dateに格納
+            $display_date = date("Y-m-d", strtotime("$request_date -1 day"));
         }else if($select_day == "next"){
-            $display_date = date("Y-m-d", strtotime("+1 day"));
+            // $request_dateを基準にした1日後の日付を$display_dateに格納
+            $display_date = date("Y-m-d", strtotime("$request_date +1 day"));
         }
 
         Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);//表示されている日付が取得されている
@@ -261,8 +272,9 @@ class AttendanceController extends Controller
             $hours = floor($seconds / 3600);
             $minutes = floor(($seconds / 60) % 60);
             $seconds = $seconds % 60;
-            $hms = $hours.':'.$minutes.':'.$seconds;
+            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);//$hms = $hours.':'.$minutes.':'.$seconds;
             $attendance_data['rest_sum'] = $hms;
+            $attendance_data['total_work_time'] = $hms;
         }
 
         return view('attendancedatelist',
