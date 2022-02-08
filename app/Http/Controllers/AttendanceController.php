@@ -194,32 +194,30 @@ class AttendanceController extends Controller
 
             $rest_sum = 0;//休憩時間の合計
             foreach ($rests_list as $rest_data){
-                Log::alert('$rest_dataの出力調査', ['$rest_data' => $rest_data]);
                 $rest_sum =  $rest_sum + $rest_data['rest_time'];       
             }
 
             $attendance_data['rest_sum'] = $rest_sum;
 
-            Log::alert('$rest_sumの出力調査', ['$rest_sum' => $rest_sum]);
-            Log::alert('$attendance_dataの出力調査', ['$attendance_data' => $attendance_data]);
-
             $seconds = $rest_sum;
             $hours = floor($seconds / 3600);
             $minutes = floor(($seconds / 60) % 60);
             $seconds = $seconds % 60;
-            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
-            Log::alert('$hmsの出力調査', ['$hms' => $hms]);
+            $hms = $hours.':'.$minutes.':'.$seconds;
+            $attendance_data['rest_sum'] = $hms;
         }
-        
+
         return view('attendancedatelist',
             ['display_date' => $display_date],
             ['attendance_list' => $attendance_list],
-            ['hms' => $hms]
         );
     }
 
     public function other_day(Request $request)
     {
+        $display_date = $request['display_date'];
+        Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);//null
+
         $select_day = $request['select_day'];
         Log::alert('$select_dayの出力調査', ['$select_day' => $select_day]);//back,nextどちらかは取れている
         
@@ -246,6 +244,7 @@ class AttendanceController extends Controller
             ->where('attendances.work_day',$display_date)
             ->orderBy('attendances.created_at', 'desc')
             ->paginate(2);
+        $attendance_list->appends(compact('display_date'));
 
         foreach($attendance_list as $attendance_data){
             $user_id = $attendance_data['user_id'];
@@ -255,9 +254,17 @@ class AttendanceController extends Controller
             foreach ($rests_list as $rest_data){
                 $rest_sum =  $rest_sum + $rest_data['rest_time'];
             }
+
             $attendance_data['rest_sum'] = $rest_sum;
+
+            $seconds = $rest_sum;
+            $hours = floor($seconds / 3600);
+            $minutes = floor(($seconds / 60) % 60);
+            $seconds = $seconds % 60;
+            $hms = $hours.':'.$minutes.':'.$seconds;
+            $attendance_data['rest_sum'] = $hms;
         }
-        
+
         return view('attendancedatelist',
             ['display_date' => $display_date],
             ['attendance_list' => $attendance_list],
