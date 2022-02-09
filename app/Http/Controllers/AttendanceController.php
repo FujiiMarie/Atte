@@ -13,7 +13,7 @@ use Illuminate\Pagination\Paginator;
 
 class AttendanceController extends Controller
 {
-    public function index(Request $request)//ログイン時にどのボタンが押せるかの画面表示
+    public function index(Request $request)
     {
         $btn_start_attendance = false;
         $btn_end_attendance = false;
@@ -24,46 +24,40 @@ class AttendanceController extends Controller
         $today = Carbon::today()->format('Y-m-d');
         $now = Carbon::now()->format('H:i:s');
         $attendance = Attendance::where('user_id', $user_id)->where('work_day', $today)->first();
-        // $attendanceの中身{id,user_id,work_day,start_time,end_time,create_date,update_date}
 
-        //①今日出勤しているかどうか？
-        if($attendance != null){ //データがある場合:「勤務開始」ボタンが押せない
+        if($attendance != null){
 
-            //②勤務終了時間が入っているか？
-            if($attendance['end_time'] != null){//入っている場合：全てのボタンが押せない
+            if($attendance['end_time'] != null){
 
-            }else{//入っていない場合：③休憩中かどうか？
+            }else{
 
                 $rest = Rest::where('user_id', $user_id)->where('work_day', $today)->orderBy('start_rest', 'desc')->first();
-                // $restの中身{user_id,work_day,start_rest,end_rest,create_date,update_date}
 
                 Log::alert('restの出力調査', ['rest' => $rest]);
 
-                if($rest != null){//データがある場合：④休憩終了時間があるかどうか？
+                if($rest != null){
 
-                    if($rest['end_rest'] != null){//入っている場合（休憩終了）：「勤務終了」「休憩開始」ボタンが押せる
+                    if($rest['end_rest'] != null){
                         $btn_end_attendance = true;
                         $btn_start_rest = true;
-                    }else{//入っていない場合（休憩中）：「休憩終了」ボタンが押せる
+                    }else{
                         $btn_end_rest = true;
                     }
-                }else{//データがない場合：（休憩していない）：「勤務終了」「休憩開始」ボタンが押せる
+                }else{
                     $btn_end_attendance = true;
                     $btn_start_rest = true;
                 }            
             }
-        }else{//データがない場合:「勤務開始」ボタンが押せる
+        }else{
             $btn_start_attendance = true;
         }
             
-        $btn_display = [//trueならボタン表示
+        $btn_display = [
         'btn_start_attendance' => $btn_start_attendance,
         'btn_end_attendance' => $btn_end_attendance,
         'btn_start_rest' => $btn_start_rest,
         'btn_end_rest' => $btn_end_rest,
         ];
-
-        Log::alert('btn_displayの出力調査', ['btn_display' => $btn_display]);
 
         return view('attendanceregister',
             ['btn_display' => $btn_display],
@@ -133,7 +127,7 @@ class AttendanceController extends Controller
         }
     }
 
-    public function end_attendance(Request $request){//勤務終了
+    public function end_attendance(Request $request){
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
         $attendance_val = Attendance::where('user_id', $user_id)->where('work_day', $today)->whereNull('end_time')->first();
@@ -159,11 +153,10 @@ class AttendanceController extends Controller
         }
     }
     
-    public function datelist(Request $request)//日付一覧ページ
+    public function datelist(Request $request)
     {
         $display_date = $request['display_date'];
 
-        //defaultの処理
         if($display_date == null){
             $display_date = Carbon::today()->format('Y-m-d');
             Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);
@@ -184,15 +177,15 @@ class AttendanceController extends Controller
             ->where('attendances.work_day',$display_date)
             ->orderBy('attendances.created_at', 'desc')
             ->paginate(2);
+            $attendance_list->appends(compact('display_date'));
             
             Log::alert('$attendance_listの出力調査', ['$attendance_list' => $attendance_list]);
 
-        //①php上でrestsテーブルの合計を計算する
         foreach($attendance_list as $attendance_data){
             $user_id = $attendance_data['user_id'];
             $rests_list = Rest::where('work_day',$display_date)->where('user_id',$user_id)->get();
 
-            $rest_sum = 0;//休憩時間の合計
+            $rest_sum = 0;
             foreach ($rests_list as $rest_data){
                 $rest_sum =  $rest_sum + $rest_data['rest_time'];       
             }
@@ -204,14 +197,13 @@ class AttendanceController extends Controller
             $minutes = floor(($seconds / 60) % 60);
             $seconds = $seconds % 60;
             $hms = $hours.':'.$minutes.':'.$seconds;
-            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);//$hms = $hours.':'.$minutes.':'.$seconds;
+            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
             $attendance_data['rest_sum'] = $hms;
 
             $work_seconds = $attendance_data['total_work_time'];
             $work_hours = floor($work_seconds / 3600);
             $work_minutes = floor(($work_seconds / 60) % 60);
             $work_seconds = $work_seconds % 60;
-            $work_hms = $work_hours.':'.$work_minutes.':'.$work_seconds;
             $work_hms = sprintf("%02d:%02d:%02d", $work_hours, $minutes, $work_seconds);
             $attendance_data['total_work_time'] = $work_hms;
         }
@@ -225,20 +217,14 @@ class AttendanceController extends Controller
     public function other_day(Request $request)
     {
         $request_date = $request['display_date'];
-        Log::alert('$request_dateの出力調査', ['$requestdate' => $request_date]);//null
 
         $select_day = $request['select_day'];
-        Log::alert('$select_dayの出力調査', ['$select_day' => $select_day]);//back,nextどちらかは取れている
         
         if($select_day == "back"){
-            // $request_dateを基準にした1日前の日付を$display_dateに格納
             $display_date = date("Y-m-d", strtotime("$request_date -1 day"));
         }else if($select_day == "next"){
-            // $request_dateを基準にした1日後の日付を$display_dateに格納
             $display_date = date("Y-m-d", strtotime("$request_date +1 day"));
         }
-
-        Log::alert('$display_dateの出力調査', ['$display_date' => $display_date]);//表示されている日付が取得されている
 
         $attendance_list = Attendance::select([
             'users.id as id',
@@ -255,7 +241,7 @@ class AttendanceController extends Controller
             ->where('attendances.work_day',$display_date)
             ->orderBy('attendances.created_at', 'desc')
             ->paginate(2);
-        $attendance_list->appends(compact('display_date'));
+            $attendance_list->appends(compact('display_date'));
 
         foreach($attendance_list as $attendance_data){
             $user_id = $attendance_data['user_id'];
@@ -272,7 +258,7 @@ class AttendanceController extends Controller
             $hours = floor($seconds / 3600);
             $minutes = floor(($seconds / 60) % 60);
             $seconds = $seconds % 60;
-            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);//$hms = $hours.':'.$minutes.':'.$seconds;
+            $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
             $attendance_data['rest_sum'] = $hms;
             $attendance_data['total_work_time'] = $hms;
         }

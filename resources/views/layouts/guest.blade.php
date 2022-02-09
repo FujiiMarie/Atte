@@ -19,7 +19,7 @@
 
         <!-- Page Heading -->
         <header class="bg-white mx-auto p-6 flex items-center text-4xl font-semibold">
-            <a href="{{ route('dashboard') }}">
+            <a href="{{ route('login') }}">
                 Atte
             </a>
         </header>
