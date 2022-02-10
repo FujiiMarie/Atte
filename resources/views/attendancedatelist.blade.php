@@ -26,19 +26,19 @@
 
             <table class="w-11/12 mx-auto">
                 <tr class="border-t border-gray-400 h-16 text-left">
-                    <th class="w-1/5 pl-8">名前</th>
-                    <th class="w-1/5 pl-8">勤務開始</th>
-                    <th class="w-1/5 pl-8">勤務終了</th>
-                    <th class="w-1/5 pl-8">休憩時間</th>
-                    <th class="w-1/5 pl-8">勤務時間</th>
+                    <th class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">名前</th>
+                    <th class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">勤務開始</th>
+                    <th class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">勤務終了</th>
+                    <th class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">休憩時間</th>
+                    <th class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">勤務時間</th>
                 </tr>
                 @foreach ($attendance_list as $attendance)
                 <tr class="border-t border-gray-400 h-16">
-                    <td class="pl-8">{{$attendance->name}}</td>
-                    <td class="pl-8">{{$attendance->start_time}}</td>
-                    <td class="pl-8">{{$attendance->end_time}}</td>
-                    <td class="pl-8">{{$attendance->rest_sum}}</td>
-                    <td class="pl-8">{{$attendance->total_work_time}}</td>
+                    <td class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">{{$attendance->name}}</td>
+                    <td class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">{{$attendance->start_time}}</td>
+                    <td class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">{{$attendance->end_time}}</td>
+                    <td class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">{{$attendance->rest_sum}}</td>
+                    <td class="sm:w-1/5 sm:pl-8 sm:text-base w-1/12 pl-3 text-xs">{{$attendance->total_work_time}}</td>
                 </tr>
                 @endforeach
             </table>

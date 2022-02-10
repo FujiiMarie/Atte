@@ -18,13 +18,13 @@
     <body class="font-sans antialiased">
 
         <!-- Page Heading -->
-        <header class="bg-white mx-auto p-6 flex justify-between">
+        <header class="bg-white mx-auto sm:p-6 p-2 flex justify-between">
             <div class="flex items-center text-4xl font-semibold">
                 <a href="{{ route('dashboard') }}">
                     Atte
                 </a>
             </div>
-            <div class="space-x-8 ml-10 flex">
+            <div class="sm:space-x-8 sm:ml-10 flex space-x-2">
                 <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                     {{ __('ホーム') }}
                 </x-nav-link>

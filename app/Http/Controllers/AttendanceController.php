@@ -204,7 +204,7 @@ class AttendanceController extends Controller
             $work_hours = floor($work_seconds / 3600);
             $work_minutes = floor(($work_seconds / 60) % 60);
             $work_seconds = $work_seconds % 60;
-            $work_hms = sprintf("%02d:%02d:%02d", $work_hours, $minutes, $work_seconds);
+            $work_hms = sprintf("%02d:%02d:%02d", $work_hours, $work_minutes, $work_seconds);
             $attendance_data['total_work_time'] = $work_hms;
         }
 
@@ -260,7 +260,13 @@ class AttendanceController extends Controller
             $seconds = $seconds % 60;
             $hms = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
             $attendance_data['rest_sum'] = $hms;
-            $attendance_data['total_work_time'] = $hms;
+
+            $work_seconds = $attendance_data['total_work_time'];
+            $work_hours = floor($work_seconds / 3600);
+            $work_minutes = floor(($work_seconds / 60) % 60);
+            $work_seconds = $work_seconds % 60;
+            $work_hms = sprintf("%02d:%02d:%02d", $work_hours, $work_minutes, $work_seconds);
+            $attendance_data['total_work_time'] = $work_hms;
         }
 
         return view('attendancedatelist',
