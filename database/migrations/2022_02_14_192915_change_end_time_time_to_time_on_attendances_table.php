@@ -14,7 +14,7 @@ class ChangeEndTimeTimeToTimeOnAttendancesTable extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->time('end_time')->default(null)->change();
+            $table->time('end_time')->default(0)->change();
         });
     }
 

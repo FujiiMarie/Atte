@@ -14,7 +14,7 @@ class ChangeTotalWorkTimeIntegerToIntegerOnAttendancesTable extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->integer('total_work_time')->default(null)->change();
+            $table->integer('total_work_time')->default(0)->change();
         });
     }
 

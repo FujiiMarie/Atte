@@ -14,7 +14,7 @@ class ChangeEndRestTimeToTimeOnRestsTable extends Migration
     public function up()
     {
         Schema::table('rests', function (Blueprint $table) {
-            $table->time('end_rest')->default(null)->change();
+            $table->time('end_rest')->default(0)->change();
         });
     }
 

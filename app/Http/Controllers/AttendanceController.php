@@ -31,7 +31,7 @@ class AttendanceController extends Controller
 
         if($attendance != null){
 
-            if($attendance['end_time'] != null){
+            if($attendance['end_time'] != 0){
 
             }else{
 
@@ -41,7 +41,7 @@ class AttendanceController extends Controller
 
                 if($rest != null){
 
-                    if($rest['end_rest'] != null){
+                    if($rest['end_rest'] != 0){
                         $btn_end_attendance = true;
                         $btn_start_rest = true;
                     }else{
@@ -110,7 +110,7 @@ class AttendanceController extends Controller
     public function end_rest(Request $request){//休憩終了
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');        
-        $rest_val = Rest::where('user_id', $user_id)->where('work_day', $today)->whereNull('end_rest')->first();
+        $rest_val = Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', 0)->first();
 
         if($rest_val == null){
 
@@ -121,7 +121,7 @@ class AttendanceController extends Controller
             $end_rest = Carbon::now()->format('H:i:s');
             $total_rest_time = $start_rest->diffInSeconds($end_rest);
 
-            Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', null)->update([
+            Rest::where('user_id', $user_id)->where('work_day', $today)->where('end_rest', 0)->update([
                 'user_id' => Auth::id(),
                 'end_rest' => Carbon::now()->format('H:i:s'),
                 'rest_time' => $total_rest_time
@@ -134,7 +134,7 @@ class AttendanceController extends Controller
     public function end_attendance(Request $request){
         $user_id = Auth::id();
         $today = Carbon::today()->format('Y-m-d');
-        $attendance_val = Attendance::where('user_id', $user_id)->where('work_day', $today)->whereNull('end_time')->first();
+        $attendance_val = Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', 0)->first();
 
         if($attendance_val == null){
 
@@ -147,7 +147,7 @@ class AttendanceController extends Controller
 
             Log::alert('$total_work_timeの出力調査', ['$total_work_time' => $total_work_time]);
 
-            Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', null)->update([
+            Attendance::where('user_id', $user_id)->where('work_day', $today)->where('end_time', 0)->update([
                 'user_id' => Auth::id(),
                 'end_time' => Carbon::now()->format('H:i:s'),
                 'total_work_time' => $total_work_time

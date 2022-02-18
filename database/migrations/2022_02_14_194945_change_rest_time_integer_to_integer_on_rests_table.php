@@ -14,7 +14,7 @@ class ChangeRestTimeIntegerToIntegerOnRestsTable extends Migration
     public function up()
     {
         Schema::table('rests', function (Blueprint $table) {
-            $table->integer('rest_time')->default(null)->change();
+            $table->integer('rest_time')->default(0)->change();
         });
     }
 
