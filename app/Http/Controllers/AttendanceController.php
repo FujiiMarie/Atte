@@ -19,7 +19,7 @@ class AttendanceController extends Controller
 
     public function index(Request $request)
     {
-        $btn_start_attendance = false;
+        $btn_start_attendance = false;//falseの時ボタンを押せる
         $btn_end_attendance = false;
         $btn_start_rest = false;
         $btn_end_rest = false;
@@ -29,30 +29,30 @@ class AttendanceController extends Controller
         $now = Carbon::now()->format('H:i:s');
         $attendance = Attendance::where('user_id', $user_id)->where('work_day', $today)->first();
 
-        if($attendance != null){
+        if($attendance != null){//勤務データがある場合
 
-            if($attendance['end_time'] != 0){
+            if($attendance['end_time'] != 0){//終了時間が入っている場合：全てのボタンが押せない
 
-            }else{
+            }else{//終了時間が入っていない場合
 
                 $rest = Rest::where('user_id', $user_id)->where('work_day', $today)->orderBy('start_rest', 'desc')->first();
 
                 Log::alert('restの出力調査', ['rest' => $rest]);
 
-                if($rest != null){
+                if($rest != null){//休憩中データがある場合
 
-                    if($rest['end_rest'] != 0){
+                    if($rest['end_rest'] != '00:00:00'){//休憩終了時間が入っている場合：勤務終了と休憩開始ボタンを押せる
                         $btn_end_attendance = true;
                         $btn_start_rest = true;
-                    }else{
+                    }else{//休憩終了時間が入っていない場合：休憩終了ボタンを押せる
                         $btn_end_rest = true;
                     }
-                }else{
+                }else{//休憩中データがない場合(休憩していない)：勤務終了と休憩開始ボタンが押せる 
                     $btn_end_attendance = true;
                     $btn_start_rest = true;
                 }            
             }
-        }else{
+        }else{//勤務データがない場合：勤務開始ボタンのみ押せる
             $btn_start_attendance = true;
         }
             
