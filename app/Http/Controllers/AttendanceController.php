@@ -31,13 +31,11 @@ class AttendanceController extends Controller
 
         if($attendance != null){//勤務データがある場合
 
-            if($attendance['end_time'] != 0){//終了時間が入っている場合：全てのボタンが押せない
+            if($attendance['end_time'] != '00:00:00'){//終了時間が入っている場合：全てのボタンが押せない
 
-            }else{//終了時間が入っていない場合
+            }else{//終了時間が入っていない場合=終了時間が'00:00:00'の場合
 
                 $rest = Rest::where('user_id', $user_id)->where('work_day', $today)->orderBy('start_rest', 'desc')->first();
-
-                Log::alert('restの出力調査', ['rest' => $rest]);
 
                 if($rest != null){//休憩中データがある場合
 
